@@ -128,9 +128,81 @@
             flex: 0 0 auto;
         }
 
+        .cheatsheet-panel {
+            margin-top: 1rem;
+            flex: 0 0 auto;
+            max-height: 50vh;
+        }
+
+        .cheatsheet-content {
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cheatsheet-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .cheatsheet-section h4 {
+            color: #61dafb;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-bottom: 1px solid #404040;
+            padding-bottom: 0.25rem;
+        }
+
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .cheat-item {
+            display: flex;
+            align-items: center;
+            padding: 0.4rem;
+            background-color: #1a1a1a;
+            border-radius: 3px;
+            border-left: 3px solid #61dafb;
+        }
+
+        .cheat-item code {
+            background-color: #2d2d2d;
+            color: #61dafb;
+            padding: 0.2rem 0.4rem;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            min-width: 120px;
+            text-align: center;
+            margin-right: 0.75rem;
+            border: 1px solid #404040;
+        }
+
+        .cheat-item span {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
+            }
+
+            .cheatsheet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cheat-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cheat-item code {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+                min-width: auto;
             }
         }
     </style>
@@ -159,6 +231,204 @@
             <div class="panel">
                 <div class="panel-header">Output</div>
                 <div id="resultOutput"></div>
+            </div>
+
+            <div class="panel cheatsheet-panel">
+                <div class="panel-header" onclick="toggleCheatsheet()">
+                    <span>jq Cheatsheet</span>
+                    <span id="cheatsheet-toggle" style="float: right; cursor: pointer;">▼</span>
+                </div>
+                <div class="panel-content cheatsheet-content" id="cheatsheet-content" style="display: none;">
+                    <div class="cheatsheet-section">
+                        <h4>Basic Operations</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>.</code>
+                                <span>Identity operator</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>|</code>
+                                <span>Pipe operator</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.foo</code>
+                                <span>Get property "foo"</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.foo.bar</code>
+                                <span>Get nested property</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.["foo"]</code>
+                                <span>Get property with variable name</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.[0]</code>
+                                <span>Get first array element</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>Array Operations</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>[]</code>
+                                <span>Iterator/array destructuring</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.[]</code>
+                                <span>Stream array elements</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>[.[]]</code>
+                                <span>Collect stream into array</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.[:2]</code>
+                                <span>First 2 elements (slice)</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.[-2:]</code>
+                                <span>Last 2 elements</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>.[1:4]</code>
+                                <span>Elements 1-3 (slice)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>Object Construction</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>{name, age}</code>
+                                <span>Select specific fields</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>{new_name: .old}</code>
+                                <span>Rename field</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>{name, count: .items | length}</code>
+                                <span>Computed field</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>+</code>
+                                <span>Merge objects</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>Common Filters</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>map(.value)</code>
+                                <span>Transform array elements</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>select(.age > 18)</code>
+                                <span>Filter elements</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>sort_by(.age)</code>
+                                <span>Sort by field</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>group_by(.type)</code>
+                                <span>Group by field</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>unique</code>
+                                <span>Unique elements</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>reverse</code>
+                                <span>Reverse array</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>String Operations</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>ascii_upcase</code>
+                                <span>Convert to uppercase</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>ascii_downcase</code>
+                                <span>Convert to lowercase</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>split(",")</code>
+                                <span>Split string into array</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>join(",")</code>
+                                <span>Join array into string</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>length</code>
+                                <span>String length</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>Mathematical Operations</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>length</code>
+                                <span>Array/object length</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>keys</code>
+                                <span>Get object keys</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>has("key")</code>
+                                <span>Check if key exists</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>type</code>
+                                <span>Get data type</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>tonumber</code>
+                                <span>Convert to number</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>tostring</code>
+                                <span>Convert to string</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cheatsheet-section">
+                        <h4>Conditional Logic</h4>
+                        <div class="cheatsheet-grid">
+                            <div class="cheat-item">
+                                <code>if .age > 18 then "adult" else "minor" end</code>
+                                <span>If-then-else</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>// "default"</code>
+                                <span>Alternative operator</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>?// "default"</code>
+                                <span>Safe alternative</span>
+                            </div>
+                            <div class="cheat-item">
+                                <code>try .value catch "error"</code>
+                                <span>Try-catch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -239,6 +509,20 @@
         // Event listeners for real-time updates
         jsonInput.addEventListener('input', executeWithDelay);
         queryInput.addEventListener('input', executeWithDelay);
+
+        // Toggle cheatsheet visibility
+        function toggleCheatsheet() {
+            const content = document.getElementById('cheatsheet-content');
+            const toggle = document.getElementById('cheatsheet-toggle');
+
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                toggle.textContent = '▲';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '▼';
+            }
+        }
 
         // Initialize jq when the page loads
         window.addEventListener('load', initializeJQ);
