@@ -120,6 +120,60 @@ textarea {
     flex: 0 0 auto;
 }
 
+.ai-prompt-panel {
+    flex: 0 0 auto;
+}
+
+.ai-prompt-input-container {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #1a1a1a;
+}
+
+#aiPromptInput {
+    flex: 1;
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid #404040;
+    padding: 0.75rem 1rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    border-radius: 4px;
+}
+
+#aiPromptInput:focus {
+    border-color: #61dafb;
+}
+
+#generateQueryBtn {
+    background-color: #61dafb;
+    color: #1a1a1a;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+#generateQueryBtn:hover {
+    background-color: #4fa8c5;
+}
+
+#generateQueryBtn:active {
+    background-color: #3d8ba3;
+}
+
+#generateQueryBtn:disabled {
+    background-color: #404040;
+    color: #808080;
+    cursor: not-allowed;
+}
+
 .cheatsheet-panel {
     margin-top: 1rem;
     flex: 0 0 auto;

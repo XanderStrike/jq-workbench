@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jq Workbench</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="/client/quick.js"></script>
     <script src="jq.js"></script>
 </head>
 <body>
@@ -24,6 +25,14 @@
             <div class="panel query-input">
                 <div class="panel-header">jq Query</div>
                 <input type="text" id="queryInput" placeholder="." value="{name, age, city: .city | ascii_upcase, hobbies: .hobbies[:2]}">
+            </div>
+
+            <div class="panel ai-prompt-panel">
+                <div class="panel-header">Generate Query with AI</div>
+                <div class="ai-prompt-input-container">
+                    <input type="text" id="aiPromptInput" placeholder="Describe what you want to extract from the JSON...">
+                    <button id="generateQueryBtn">Generate</button>
+                </div>
             </div>
         </div>
 
