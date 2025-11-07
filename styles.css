@@ -17,12 +17,31 @@ body {
     background-color: #2d2d2d;
     padding: 1rem;
     border-bottom: 1px solid #404040;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header h1 {
     color: #61dafb;
     font-size: 1.5rem;
     font-weight: normal;
+}
+
+.github-link {
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.github-link:hover {
+    color: #61dafb;
+}
+
+.github-link svg {
+    width: 24px;
+    height: 24px;
 }
 
 .container {

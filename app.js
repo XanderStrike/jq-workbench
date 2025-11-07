@@ -118,25 +118,79 @@ async function generateQuery() {
             return;
         }
 
-        // Construct prompt for the AI to generate only the jq query
-        const aiContext = `Given this JSON data:
+        // Attempt to generate and validate query with retry logic
+        let attempts = 0;
+        const maxAttempts = 3;
+        let lastError = null;
+        let lastQuery = null;
+
+        while (attempts < maxAttempts) {
+            attempts++;
+
+            // Construct prompt for the AI to generate only the jq query
+            let aiContext;
+            if (attempts === 1) {
+                // First attempt - normal prompt
+                aiContext = `Given this JSON data:
 ${JSON.stringify(jsonData, null, 2)}
 
 User request: ${userPrompt}
 
 Generate a jq query that accomplishes the user's request. Respond with ONLY the jq query, nothing else. Do not include explanations, markdown formatting, quotes, or code blocks. Do not include the jq command, just the raw jq query string.`;
+            } else {
+                // Retry with error feedback
+                generateQueryBtn.textContent = `Fixing... (${attempts}/${maxAttempts})`;
+                aiContext = `Given this JSON data:
+${JSON.stringify(jsonData, null, 2)}
 
-        // Call the AI using the quick module
-        const generatedQuery = await quick.ai.ask(aiContext);
+User request: ${userPrompt}
 
-        // Clean up the response - remove any potential markdown or extra whitespace
-        const cleanedQuery = generatedQuery.trim().replace(/^```.*\n?|```$/g, '').trim();
+Your previous jq query was:
+${lastQuery}
 
-        // Update the query input with the generated query
-        queryInput.value = cleanedQuery;
+It failed with this error:
+${lastError}
 
-        // Execute the query to show results
-        executeJQ();
+Generate a corrected jq query that accomplishes the user's request and fixes the error. Respond with ONLY the jq query, nothing else. Do not include explanations, markdown formatting, quotes, or code blocks. Do not include the jq command, just the raw jq query string.`;
+            }
+
+            // Call the AI using the quick module
+            const generatedQuery = await quick.ai.ask(aiContext);
+
+            // Clean up the response - remove any potential markdown or extra whitespace
+            const cleanedQuery = generatedQuery.trim().replace(/^```.*\n?|```$/g, '').trim();
+
+            // Update the query input with the generated query
+            queryInput.value = cleanedQuery;
+
+            // Test the query with jq
+            try {
+                const result = jqModule.json(jsonData, cleanedQuery);
+
+                // If successful, display the result and exit
+                if (typeof result === 'object') {
+                    resultOutput.textContent = JSON.stringify(result, null, 2);
+                } else {
+                    resultOutput.textContent = result;
+                }
+                resultOutput.className = 'success';
+
+                // Clear the AI prompt input on success
+                // aiPromptInput.value = '';
+                break; // Exit the retry loop
+            } catch (error) {
+                // Store the error and query for the next attempt
+                lastError = error.message;
+                lastQuery = cleanedQuery;
+
+                if (attempts >= maxAttempts) {
+                    // Max attempts reached, show final error
+                    resultOutput.textContent = `Error: Failed to generate valid query after ${maxAttempts} attempts.\nLast error: ${error.message}`;
+                    resultOutput.className = 'error';
+                }
+                // Otherwise, continue to next retry
+            }
+        }
     } catch (error) {
         resultOutput.textContent = `Error generating query: ${error.message}`;
         resultOutput.className = 'error';
