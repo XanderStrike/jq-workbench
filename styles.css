@@ -61,6 +61,31 @@ body {
     border-bottom: 1px solid #404040;
     font-size: 0.9rem;
     color: #a0a0a0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-btn {
+    background-color: #2d2d2d;
+    color: #61dafb;
+    border: 1px solid #404040;
+    padding: 0.25rem 0.75rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.header-btn:hover {
+    background-color: #61dafb;
+    color: #1a1a1a;
+    border-color: #61dafb;
+}
+
+.header-btn:active {
+    background-color: #4fa8c5;
 }
 
 .panel-content {

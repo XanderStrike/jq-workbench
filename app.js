@@ -3,6 +3,7 @@ const queryInput = document.getElementById('queryInput');
 const resultOutput = document.getElementById('resultOutput');
 const aiPromptInput = document.getElementById('aiPromptInput');
 const generateQueryBtn = document.getElementById('generateQueryBtn');
+const formatBtn = document.getElementById('formatBtn');
 
 // Set initial example data
 jsonInput.value = JSON.stringify({
@@ -136,10 +137,6 @@ Generate a jq query that accomplishes the user's request. Respond with ONLY the 
 
         // Execute the query to show results
         executeJQ();
-
-        // Clear the AI prompt input
-        aiPromptInput.value = '';
-
     } catch (error) {
         resultOutput.textContent = `Error generating query: ${error.message}`;
         resultOutput.className = 'error';
@@ -150,6 +147,35 @@ Generate a jq query that accomplishes the user's request. Respond with ONLY the 
     }
 }
 
+// Format JSON input
+function formatJSON() {
+    if (!jqReady) {
+        resultOutput.textContent = 'Error: jq not loaded yet';
+        resultOutput.className = 'error';
+        return;
+    }
+
+    const jsonText = jsonInput.value.trim();
+
+    if (!jsonText) {
+        return;
+    }
+
+    try {
+        // Parse JSON to validate it
+        const jsonData = JSON.parse(jsonText);
+
+        // Use jq to format with identity operator
+        const formatted = jqModule.json(jsonData, '.');
+
+        // Update the input with formatted JSON
+        jsonInput.value = JSON.stringify(formatted, null, 2);
+    } catch (error) {
+        resultOutput.textContent = `Format Error: ${error.message}`;
+        resultOutput.className = 'error';
+    }
+}
+
 // Event listeners for AI query generation
 generateQueryBtn.addEventListener('click', generateQuery);
 aiPromptInput.addEventListener('keypress', (e) => {
@@ -157,6 +183,9 @@ aiPromptInput.addEventListener('keypress', (e) => {
         generateQuery();
     }
 });
+
+// Event listener for format button
+formatBtn.addEventListener('click', formatJSON);
 
 // Initialize jq when the page loads
 window.addEventListener('load', initializeJQ);
