@@ -4,6 +4,7 @@ const resultOutput = document.getElementById('resultOutput');
 const aiPromptInput = document.getElementById('aiPromptInput');
 const generateQueryBtn = document.getElementById('generateQueryBtn');
 const formatBtn = document.getElementById('formatBtn');
+const copyToInputBtn = document.getElementById('copyToInputBtn');
 
 // Set initial example data
 jsonInput.value = JSON.stringify({
@@ -72,6 +73,23 @@ function executeWithDelay() {
     clearTimeout(timeout);
     timeout = setTimeout(executeJQ, 300); // 300ms delay
 }
+
+// When JSON is pasted, reset query to '.' if the current query fails
+jsonInput.addEventListener('paste', () => {
+    // Use setTimeout so the pasted value is available
+    setTimeout(() => {
+        if (!jqReady) return;
+        const jsonText = jsonInput.value;
+        const query = queryInput.value || '.';
+        try {
+            const jsonData = JSON.parse(jsonText);
+            jqModule.json(jsonData, query);
+        } catch (e) {
+            queryInput.value = '.';
+        }
+        executeJQ();
+    }, 0);
+});
 
 // Event listeners for real-time updates
 jsonInput.addEventListener('input', executeWithDelay);
@@ -238,8 +256,18 @@ aiPromptInput.addEventListener('keypress', (e) => {
     }
 });
 
+// Copy output to JSON input
+function copyToInput() {
+    const output = resultOutput.textContent;
+    if (!output || resultOutput.className === 'error') return;
+    jsonInput.value = output;
+    queryInput.value = '.';
+    executeJQ();
+}
+
 // Event listener for format button
 formatBtn.addEventListener('click', formatJSON);
+copyToInputBtn.addEventListener('click', copyToInput);
 
 // Initialize jq when the page loads
 window.addEventListener('load', initializeJQ);
