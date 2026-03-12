@@ -470,7 +470,7 @@
             }
         }
 
-        function executeJQ() {
+        function executeJQ(shouldResetQuery = false) {
             if (!jqReady) {
                 resultOutput.textContent = 'Loading jq...';
                 return;
@@ -494,6 +494,11 @@
                 }
                 resultOutput.className = 'success';
             } catch (error) {
+                if (!shouldResetQuery && query !== '.') {
+                    queryInput.value = '.';
+                    executeJQ(true);
+                    return;
+                }
                 resultOutput.textContent = `Error: ${error.message}`;
                 resultOutput.className = 'error';
             }
