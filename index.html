@@ -518,7 +518,7 @@
                 }
                 resultOutput.className = 'success';
             } catch (error) {
-                if (!shouldResetQuery && query !== '.') {
+                if (shouldResetQuery && query !== '.') {
                     queryInput.value = '.';
                     executeJQ(true);
                     return;
@@ -538,6 +538,10 @@
         // Event listeners for real-time updates
         jsonInput.addEventListener('input', executeWithDelay);
         queryInput.addEventListener('input', executeWithDelay);
+
+        // Reset query on paste
+        jsonInput.addEventListener('paste', () => executeJQ(true));
+        queryInput.addEventListener('paste', () => executeJQ(true));
 
         // Toggle cheatsheet visibility
         function toggleCheatsheet() {
