@@ -88,6 +88,29 @@
             border-bottom: 1px solid #404040;
             font-size: 0.9rem;
             color: #a0a0a0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header .title {
+            flex: 1;
+        }
+
+        .panel-header .btn {
+            background-color: #4a4a4a;
+            color: #61dafb;
+            border: 1px solid #606060;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .panel-header .btn:hover {
+            background-color: #5a5a5a;
         }
 
         .panel-content {
@@ -239,7 +262,10 @@
     <div class="container">
         <div class="input-panel">
             <div class="panel json-input">
-                <div class="panel-header">JSON Input</div>
+                <div class="panel-header">
+                    <span class="title">JSON Input</span>
+                    <button class="btn" onclick="formatJsonInput()">Format</button>
+                </div>
                 <div class="panel-content">
                     <textarea id="jsonInput" placeholder='{"example": "data", "array": [1, 2, 3]}'></textarea>
                 </div>
@@ -253,7 +279,10 @@
 
         <div class="output-panel">
             <div class="panel">
-                <div class="panel-header">Output</div>
+                <div class="panel-header">
+                    <span class="title">Output</span>
+                    <button class="btn" onclick="copyToInput()">Copy to Input</button>
+                </div>
                 <div id="resultOutput"></div>
             </div>
 
@@ -542,6 +571,22 @@
         // Reset query on paste
         jsonInput.addEventListener('paste', () => executeJQ(true));
         queryInput.addEventListener('paste', () => executeJQ(true));
+
+        function formatJsonInput() {
+            try {
+                const parsed = JSON.parse(jsonInput.value);
+                jsonInput.value = JSON.stringify(parsed, null, 2);
+                executeJQ();
+            } catch (e) {
+                resultOutput.textContent = `Format Error: ${e.message}`;
+                resultOutput.className = 'error';
+            }
+        }
+
+        function copyToInput() {
+            jsonInput.value = resultOutput.textContent;
+            executeJQ();
+        }
 
         // Toggle cheatsheet visibility
         function toggleCheatsheet() {
